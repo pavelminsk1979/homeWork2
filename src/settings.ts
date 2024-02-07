@@ -1,5 +1,6 @@
 import express, {Request, Response} from 'express'
-import {videos, videosRoute} from "./routes/videos-route";
+import { videosRoute} from "./routes/videos-route";
+import {videos} from "./repositories/videos-repository";
 
 export const app = express()
 
