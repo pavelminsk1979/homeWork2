@@ -29,9 +29,9 @@ describe('/videos',()=>{
             .send({ title: '', author: '' })
             .expect(400)
 
-        expect(res.body).toEqual({  errorsMessages: [
-                { message: 'Incorrect title', field: 'title' },
-                { message: 'Incorrect author', field: 'author' },
+        expect(res.body).toEqual({  errors: [
+                { msg: 'Incorrect title', value: '', type: 'field', path: 'title', location: 'body' },
+                { msg: 'Incorrect author', value: '', type: 'field', path: 'author', location: 'body' },
             ]})
 
 
