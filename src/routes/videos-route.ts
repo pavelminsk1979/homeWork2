@@ -1,11 +1,14 @@
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import {Router} from "express";
 import {GetVideoById} from "../models/GetVideoModel";
 import {CreateVideo} from "../models/CreateVideoModel";
 import {UpdateVideo} from "../models/UpdateVideoModel";
 import {DeleteVideoById} from "../models/DeleteVideoModel";
 import {videosRepository} from "../repositories/videos-repository";
-import {body, validationResult} from "express-validator";
+import { validationResult} from "express-validator";
+import {titleValidation} from "../middlewares/titleValidation";
+import {authorValidation} from "../middlewares/authorValidation";
+import {errorValidation} from "../middlewares/errorValidation";
 
 export const videosRoute = Router({})
 
@@ -18,23 +21,8 @@ type RequestWithBody<B> = Request<unknown, unknown, B, unknown>
 
 type RequestWithParamsWithBody<P, B> = Request<P, unknown, B, unknown>
 
-/*
-type ErrorsMessage = {
-    msg: string,
-    type: string,
-    value: string,
-    path: string,
-    location: string,
-}
-type ErrorType = { errors: ErrorsMessage[] }
-
-*/
 
 
-
-const titleValidation = body('title').trim().isString().isLength({min: 1, max: 40}).withMessage('Incorrect title')
-
-const authorValidation =   body('author').trim().isString().isLength({min: 1, max: 20}).withMessage('Incorrect author')
 
 videosRoute.get('/', (req: Request, res: Response) => {
     const videos = videosRepository.getVideos()
@@ -51,17 +39,12 @@ videosRoute.get('/:id', (req: RequestWithParams<GetVideoById>, res: Response) =>
     }
 })
 
-    //RequestWithBody<CreateVideo>
-videosRoute.post('/', titleValidation,authorValidation,
-    (req: Request, res: Response) => {
-        let errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            res.status(400).json({errors: errors.array()})
-        } else {
-            let newVideo = videosRepository.createVideo(req.body)
-            res.status(201).send(newVideo)
-        }
-})
+//RequestWithBody<CreateVideo>
+videosRoute.post('/', titleValidation, authorValidation, errorValidation,
+    (req: RequestWithBody<CreateVideo>, res: Response) => {
+        let newVideo = videosRepository.createVideo(req.body)
+        res.status(201).send(newVideo)
+    })
 
 
 videosRoute.put('/:id', (req: RequestWithParamsWithBody<GetVideoById, UpdateVideo>, res: Response) => {
