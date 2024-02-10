@@ -65,6 +65,7 @@ describe('/videos',()=>{
 
 
     it('- PUT videos by incorrect ID ', async () => {
+
         await req
             .put('/videos/' + 1223)
             .send({ title: 'title', author: 'title' })
@@ -101,8 +102,8 @@ describe('/videos',()=>{
                 author: 'hello author2',
             })
             .expect(400)
-        expect(res.body).toEqual({  errorsMessages: [
-                { message: 'Incorrect title', field: 'title' }
+        expect(res.body).toEqual({  errors: [
+                { msg: 'Incorrect title', value: '', type: 'field', path: 'title', location: 'body' }
             ]})
 
         const getRes =await req
