@@ -1,15 +1,16 @@
-import {NextFunction, Request, Response} from "express";
+import { Request, Response} from "express";
 import {Router} from "express";
 import {GetVideoById} from "../models/GetVideoModel";
 import {CreateVideo} from "../models/CreateVideoModel";
-import {UpdateVideo} from "../models/UpdateVideoModel";
 import {DeleteVideoById} from "../models/DeleteVideoModel";
-import {AvailableResolutions, videosRepository} from "../repositories/videos-repository";
-import {validationResult} from "express-validator";
+import { videosRepository} from "../repositories/videos-repository";
 import {titleValidation} from "../middlewares/titleValidation";
 import {authorValidation} from "../middlewares/authorValidation";
 import {errorValidation} from "../middlewares/errorValidation";
-import {body} from "express-validator";
+import {minAgeRestrictionValidation} from "../middlewares/minAgeRestrictionValidation";
+import {canBeDownloadedValidation} from "../middlewares/canBeDownloadedValidation";
+import {publicationDateValidation} from "../middlewares/publicationDateValidation";
+import {availableResolutionsValidation} from "../middlewares/availableResolutionsValidation";
 
 export const videosRoute = Router({})
 
@@ -46,35 +47,19 @@ videosRoute.post('/', titleValidation, authorValidation, errorValidation,
     })
 
 
+//RequestWithParamsWithBody<GetVideoById, UpdateVideo>
 videosRoute.put('/:id', titleValidation, authorValidation,
-
-    body('minAgeRestriction').optional().trim().isLength({min: 1, max: 18}).withMessage('min1,max 18'),
-    body('canBeDownloaded').optional().custom((value) => typeof value === 'boolean').withMessage('boolean value'),
-    body('publicationDate').optional().custom((value) => typeof value === 'string').withMessage('Date value, type string'),
-    body('availableResolutions').optional().custom((value, {req}) => {
-        if (Array.isArray(value)) {
-            value.forEach(e => {
-                if (!(e in AvailableResolutions)) {
-                    throw new Error('Incorrect availableResolutions');
-                }
-            })
-        } else {
-            req.body.availableResolutions = []
-        }
-    }).withMessage('Incorrect availableResolutions'),
+    minAgeRestrictionValidation,
+    canBeDownloadedValidation,
+    publicationDateValidation,
+    availableResolutionsValidation, errorValidation,
     (req: Request, res: Response) => {
-        let errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            res.status(400).json({errors: errors.array()})
+        let isUpdateVideo = videosRepository.updateVideo(+req.params.id, req.body)
+        if (isUpdateVideo) {
+            res.sendStatus(204)
         } else {
-            let isUpdateVideo = videosRepository.updateVideo(+req.params.id, req.body)
-            if (isUpdateVideo) {
-                res.sendStatus(204)
-            } else {
-                res.sendStatus(404)
-            }
+            res.sendStatus(404)
         }
-
     })
 
 
@@ -88,37 +73,3 @@ videosRoute.delete('/:id', (req: RequestWithParams<DeleteVideoById>, res: Respon
 })
 
 
-/*
-
-videosRoute.put('/:id',titleValidation, authorValidation,
-    body('minAgeRestriction').trim().isLength({min: 1, max: 18}).withMessage('min1,max 18'),
-    body('canBeDownloaded').custom((value) => typeof value === 'boolean').withMessage('boolean value'),
-    body('publicationDate').custom((value) => typeof value === 'string').withMessage('Date value, type string'),
-    body('availableResolutions').custom((value,{req}) =>{
-        if(Array.isArray(value)){
-            value.forEach(e => {
-                if (!(e in AvailableResolutions)) {
-                    throw new Error('Incorrect availableResolutions');
-                }
-            })
-        }else{req.body.availableResolutions=[]}
-    }).withMessage('Incorrect availableResolutions'),
-    //RequestWithParamsWithBody<GetVideoById, UpdateVideo>
-    (req: Request, res: Response) => {
-        let errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            res.status(400).json({errors: errors.array()})
-        }
-        /!*  let errors = videosRepository.findErrors(req.body)
-          if (errors.errorsMessages.length) {
-              res.status(400).send(errors)
-          }*!/ else {
-            let isUpdateVideo = videosRepository.updateVideo(+req.params.id, req.body)
-            if (isUpdateVideo) {
-                res.sendStatus(204)
-            } else {
-                res.sendStatus(404)
-            }
-        }
-
-    })*/
