@@ -37,13 +37,6 @@ export const videos: Video[] = [
     }
 ]
 
-type ErrorsMessage = {
-    message: string,
-    field: string
-}
-type ErrorType = { errorsMessages: ErrorsMessage[] }
-
-
 export const videosRepository = {
     getVideos() {
         return videos
