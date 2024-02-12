@@ -1,5 +1,6 @@
 import {agent as supertest} from "supertest";
 import {app} from "../src/settings";
+import {STATUS_CODE} from "../src/constant-status-code";
 
 
 const  req = supertest(app)
@@ -16,7 +17,7 @@ describe('/videos',()=>{
     it('get content',async ()=>{
         const res = await req
             .get('/videos')
-            .expect(200)
+            .expect(STATUS_CODE.CODE_200)
 
         expect(res.body).toEqual([])
         console.log(res.body)
@@ -27,7 +28,7 @@ describe('/videos',()=>{
         const res =await req
             .post('/videos')
             .send({ title: '', author: '' })
-            .expect(400)
+            .expect(STATUS_CODE.CODE_400)
 
         expect(res.body).toEqual({  errors: [
                 { msg: 'Incorrect title', value: '', type: 'field', path: 'title', location: 'body' },
@@ -44,7 +45,7 @@ describe('/videos',()=>{
         const res =await req
             .post('/videos')
             .send({ title: 'TTTTT', author: 'AAuthor' })
-            .expect(201)
+            .expect(STATUS_CODE.CODE_201)
         idVideo=res.body.id
         expect(res.body.author).toEqual('AAuthor')
         expect(res.body.title).toEqual('TTTTT')
@@ -53,14 +54,14 @@ describe('/videos',()=>{
     it('Get video bu incorrect id',async ()=>{
         const res =await req
             .get('/videos/' + idVideo)
-            .expect(200)
+            .expect(STATUS_CODE.CODE_200)
         expect(res.body.author).toEqual('AAuthor')
     })
 
     it('Get video bu correct id',async ()=>{
         await req
             .get('/videos/' + 555)
-            .expect(404)
+            .expect(STATUS_CODE.CODE_404)
     })
 
 
@@ -69,7 +70,7 @@ describe('/videos',()=>{
         await req
             .put('/videos/' + 1223)
             .send({ title: 'title', author: 'title' })
-            .expect(404)
+            .expect(STATUS_CODE.CODE_404)
 
         const getRes =await req
             .get('/videos/')
@@ -85,7 +86,7 @@ describe('/videos',()=>{
                 title: 'hello title',
                 author: 'hello author',
             })
-            .expect(204)
+            .expect(STATUS_CODE.CODE_204)
 
         const getRes =await req
             .get('/videos/')
@@ -101,7 +102,7 @@ describe('/videos',()=>{
             .send({
                 author: 'hello author2',
             })
-            .expect(400)
+            .expect(STATUS_CODE.CODE_400)
         expect(res.body).toEqual({  errors: [
                 { msg: 'Incorrect title', value: '', type: 'field', path: 'title', location: 'body' }
             ]})
@@ -118,7 +119,7 @@ describe('/videos',()=>{
     it('- DELETE video by incorrect ID', async () => {
         await req
             .delete('/videos/' + 888)
-            .expect(404)
+            .expect(STATUS_CODE.CODE_404)
 
         const getRes =  await req
             .get('/videos')
@@ -132,7 +133,7 @@ describe('/videos',()=>{
     it('+ DELETE video by correct ID', async () => {
         await req
             .delete('/videos/' + idVideo)
-            .expect(204)
+            .expect(STATUS_CODE.CODE_204)
 
         const getRes =  await req
             .get('/videos')

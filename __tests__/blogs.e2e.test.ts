@@ -1,5 +1,6 @@
 import {agent as supertest} from "supertest";
 import {app} from "../src/settings";
+import {STATUS_CODE} from "../src/constant-status-code";
 
 
 const  req = supertest(app)
@@ -14,7 +15,7 @@ describe('/blogs',()=>{
     it('get content blogs',async ()=>{
         const res = await req
             .get('/blogs')
-            .expect(200)
+            .expect(STATUS_CODE.CODE_200)
 
         expect(res.body).toEqual([])
 
@@ -28,7 +29,7 @@ describe('/blogs',()=>{
             .post('/blogs')
             .set('Authorization', `Basic ${loginPasswordBasic64}`)
             .send({ name: '', description: '',websiteUrl:'' })
-            .expect(400)
+            .expect(STATUS_CODE.CODE_400)
 
         expect(res.body).toEqual({  errorsMessages: [
                 { message: 'Incorrect name', field: 'name' },
@@ -50,7 +51,7 @@ describe('/blogs',()=>{
             .send({ name: 'name',
                 description: 'description',
                 websiteUrl:'https://www.outue.com/'})
-            .expect(201)
+            .expect(STATUS_CODE.CODE_201)
 
         idNewBlog=res.body.id
 
@@ -62,7 +63,7 @@ describe('/blogs',()=>{
     it('Get blog bu incorrect id',async ()=>{
         const res =await req
             .get('/blogs/12345')
-        .expect(404)
+        .expect(STATUS_CODE.CODE_404)
 
     })
 
@@ -70,7 +71,7 @@ describe('/blogs',()=>{
     it('get content blogs',async ()=>{
         const res = await req
             .get('/blogs')
-            .expect(200)
+            .expect(STATUS_CODE.CODE_200)
         console.log(res.body)
 
     })
@@ -78,7 +79,7 @@ describe('/blogs',()=>{
     it('Get blog bu correct id',async ()=>{
         const res =await req
             .get('/blogs/'+idNewBlog)
-             .expect(200)
+             .expect(STATUS_CODE.CODE_200)
 
          expect(res.body.name).toEqual('name')
          expect(res.body.description).toEqual('description')
@@ -95,7 +96,7 @@ describe('/blogs',()=>{
             .send({ name: 'updateName',
                 description: 'updateDescription',
                 websiteUrl:'https://www.outue.updateCom/'})
-            .expect(404)
+            .expect(STATUS_CODE.CODE_404)
 
         const getRes =await req
             .get('/blogs/')
@@ -114,7 +115,7 @@ describe('/blogs',()=>{
             .send({ name: 'updateName',
                 description: 'updateDescription',
                 websiteUrl:'https://www.outue.updateCom/'})
-            .expect(204)
+            .expect(STATUS_CODE.CODE_204)
 
         const getRes =await req
             .get('/blogs/')
@@ -134,7 +135,7 @@ describe('/blogs',()=>{
             .send({ name: 'updateNameupdateNameupdateNameupdateName',
                 description: '',
                 websiteUrl:'htt-updateCom'})
-            .expect(400)
+            .expect(STATUS_CODE.CODE_400)
         expect(res.body).toEqual({  errorsMessages: [
                 { message: 'Incorrect name', field: 'name' },
                 { message: 'Incorrect description', field: 'description' },
@@ -155,7 +156,7 @@ describe('/blogs',()=>{
         await req
             .delete('/blogs/888')
             .set('Authorization', `Basic ${loginPasswordBasic64}`)
-            .expect(404)
+            .expect(STATUS_CODE.CODE_404)
 
         const getRes =  await req
             .get('/blogs')
@@ -171,12 +172,11 @@ describe('/blogs',()=>{
         await req
             .delete('/blogs/'+idNewBlog)
             .set('Authorization', `Basic ${loginPasswordBasic64}`)
-            .expect(204)
+            .expect(STATUS_CODE.CODE_204)
 
         const getRes =  await req
             .get('/blogs')
         expect(getRes.body.length).toBe(0)
-
     })
 
 

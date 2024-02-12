@@ -9,6 +9,7 @@ import {RequestWithParams} from "../types/RequestWithParams";
 import {IdStringGetAndDeleteModel} from "../models/IdStringGetAndDeleteModel";
 import {RequestWithBody} from "../types/RequestWithBody";
 import {CreateAndUpdateBlogModel} from "../models/CreateAndUpdateBlogModel";
+import {STATUS_CODE} from "../constant-status-code";
 
 
 
@@ -21,7 +22,7 @@ const postValidationBlogs = ()=>[nameValidationBlogs,descriptionValidationBlogs,
 
 blogsRoute.get('/', (req: Request, res: Response) => {
     const blogs = blogsRepository.getBlogs()
-    res.status(200).send(blogs)
+    res.status(STATUS_CODE.CODE_200).send(blogs)
 })
 
 
@@ -29,9 +30,9 @@ blogsRoute.get('/:id', (req: RequestWithParams<IdStringGetAndDeleteModel>, res: 
 debugger
     const blog = blogsRepository.findBlogById(req.params.id)
     if (blog) {
-        res.status(200).send(blog)
+        res.status(STATUS_CODE.CODE_200).send(blog)
     } else {
-        res.sendStatus(404)
+        res.sendStatus(STATUS_CODE.CODE_404)
     }
 
 })
@@ -39,7 +40,7 @@ debugger
 
 blogsRoute.post('/', authMiddleware,postValidationBlogs(),errorValidationBlogs,(req: RequestWithBody<CreateAndUpdateBlogModel>, res: Response) => {
     const newBlog = blogsRepository.createBlog(req.body)
-    res.status(201).send(newBlog)
+    res.status(STATUS_CODE.CODE_201).send(newBlog)
 })
 
 
@@ -47,9 +48,9 @@ blogsRoute.post('/', authMiddleware,postValidationBlogs(),errorValidationBlogs,(
 blogsRoute.put('/:id', authMiddleware,postValidationBlogs(),errorValidationBlogs,(req: Request, res: Response) => {
     const isUpdateBlog = blogsRepository.updateBlog(req.params.id,req.body)
     if(isUpdateBlog){
-        res.sendStatus(204)
+        res.sendStatus(STATUS_CODE.CODE_204)
     }else {
-        res.sendStatus(404)
+        res.sendStatus(STATUS_CODE.CODE_404)
     }
 })
 
@@ -57,9 +58,9 @@ blogsRoute.put('/:id', authMiddleware,postValidationBlogs(),errorValidationBlogs
 blogsRoute.delete('/:id', authMiddleware,(req: RequestWithParams<IdStringGetAndDeleteModel>, res: Response) => {
     const isBlogDelete = blogsRepository.deleteBlogById(req.params.id)
     if (isBlogDelete) {
-        res.sendStatus(204)
+        res.sendStatus(STATUS_CODE.CODE_204)
     } else {
-        res.sendStatus(404)
+        res.sendStatus(STATUS_CODE.CODE_404)
     }
 })
 
