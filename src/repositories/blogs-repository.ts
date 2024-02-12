@@ -1,37 +1,34 @@
-
-
 export type Blog = {
-    id:string,
-    name:string,
-    description:string,
-    websiteUrl:string
+    id: string,
+    name: string,
+    description: string,
+    websiteUrl: string
 }
 
-export const blogs :Blog[]=[
+export const blogs: Blog[] = [
     {
-        id:'123',
-        name:'blogName',
-        description:'blogDescription',
-        websiteUrl:'blogWebsiteUrl'
+        id: '123',
+        name: 'blogName',
+        description: 'blogDescription',
+        websiteUrl: 'blogWebsiteUrl'
     }
 ]
 
 
-
 export const blogsRepository = {
-    getBlogs(){
+    getBlogs() {
         return blogs
     },
 
-    findBlogById(id:string){
-        let blog = blogs.find(e=>e.id===id)
+    findBlogById(id: string) {
+        let blog = blogs.find(e => e.id === id)
         return blog
     },
 
-    createBlog(requestBodyBlog:any){
-        const {name,description,websiteUrl}=requestBodyBlog
+    createBlog(requestBodyBlog: any) {
+        const {name, description, websiteUrl} = requestBodyBlog
 
-        const newBlog:any = {
+        const newBlog: any = {
             id: new Date(),
             name,
             description,
@@ -40,6 +37,29 @@ export const blogsRepository = {
 
         blogs.push(newBlog)
         return newBlog
+    },
+
+    updateBlog(id: string, requestBodyBlog: any) {
+        const {name, description, websiteUrl} = requestBodyBlog
+        const blog = blogs.find(e => e.id === id)
+        if (blog) {
+            blog.name = name
+            blog.description = description
+            blog.websiteUrl = websiteUrl
+            return true
+        } else {
+            return false
+        }
+    },
+
+    deleteBlogById(id: string) {
+        const indexBlog = blogs.findIndex(e => e.id === id)
+        if (indexBlog === -1){
+            return false
+        }else {
+            blogs.splice(indexBlog, 1)
+            return true
+        }
 
     }
 }
