@@ -95,7 +95,7 @@ describe('/videos',()=>{
 
     })
 
-    it('+ PUT videos by ID  with incorrect data', async () => {
+    it('- PUT videos by ID  with incorrect data', async () => {
         const res=await req
             .put('/videos/' + idVideo)
             .send({

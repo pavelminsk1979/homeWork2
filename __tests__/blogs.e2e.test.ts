@@ -87,5 +87,98 @@ describe('/blogs',()=>{
     })
 
 
+    it('- PUT blog by incorrect ID ', async () => {
+
+        await req
+            .put('/blogs/1223')
+            .set('Authorization', `Basic ${loginPasswordBasic64}`)
+            .send({ name: 'updateName',
+                description: 'updateDescription',
+                websiteUrl:'https://www.outue.updateCom/'})
+            .expect(404)
+
+        const getRes =await req
+            .get('/blogs/')
+        expect(getRes.body.length).toBe(1)
+        expect(getRes.body[0].name).toEqual('name')
+        expect(getRes.body[0].description).toEqual('description')
+        expect(getRes.body[0].id).toEqual(idNewBlog)
+    })
+
+
+    it('+ PUT blog by correct ID ', async () => {
+
+        await req
+            .put('/blogs/'+idNewBlog)
+            .set('Authorization', `Basic ${loginPasswordBasic64}`)
+            .send({ name: 'updateName',
+                description: 'updateDescription',
+                websiteUrl:'https://www.outue.updateCom/'})
+            .expect(204)
+
+        const getRes =await req
+            .get('/blogs/')
+        expect(getRes.body.length).toBe(1)
+        expect(getRes.body[0].name).toEqual('updateName')
+        expect(getRes.body[0].description).toEqual('updateDescription')
+        expect(getRes.body[0].websiteUrl)
+            .toEqual('https://www.outue.updateCom/')
+    })
+
+
+    it('- PUT blog by correct ID and incorrect data ', async () => {
+
+        const res=await req
+            .put('/blogs/'+idNewBlog)
+            .set('Authorization', `Basic ${loginPasswordBasic64}`)
+            .send({ name: 'updateNameupdateNameupdateNameupdateName',
+                description: '',
+                websiteUrl:'htt-updateCom'})
+            .expect(400)
+        expect(res.body).toEqual({  errorsMessages: [
+                { message: 'Incorrect name', field: 'name' },
+                { message: 'Incorrect description', field: 'description' },
+                { message: 'Incorrect websiteUrl', field: 'websiteUrl' },
+            ]})
+
+        const getRes =await req
+            .get('/blogs/')
+        expect(getRes.body[0].name).toEqual('updateName')
+        expect(getRes.body[0].description).toEqual('updateDescription')
+        expect(getRes.body[0].websiteUrl)
+            .toEqual('https://www.outue.updateCom/')
+    })
+
+
+
+    it('- DELETE blog by incorrect ID', async () => {
+        await req
+            .delete('/blogs/888')
+            .set('Authorization', `Basic ${loginPasswordBasic64}`)
+            .expect(404)
+
+        const getRes =  await req
+            .get('/blogs')
+        expect(getRes.body[0].name).toEqual('updateName')
+        expect(getRes.body[0].description).toEqual('updateDescription')
+        expect(getRes.body[0].websiteUrl)
+            .toEqual('https://www.outue.updateCom/')
+
+    })
+
+
+    it('+ DELETE blog by incorrect ID', async () => {
+        await req
+            .delete('/blogs/'+idNewBlog)
+            .set('Authorization', `Basic ${loginPasswordBasic64}`)
+            .expect(204)
+
+        const getRes =  await req
+            .get('/blogs')
+        expect(getRes.body.length).toBe(0)
+
+    })
+
+
 
 })
