@@ -11,6 +11,7 @@ import {minAgeRestrictionValidation} from "../middlewares/minAgeRestrictionValid
 import {canBeDownloadedValidation} from "../middlewares/canBeDownloadedValidation";
 import {publicationDateValidation} from "../middlewares/publicationDateValidation";
 import {availableResolutionsValidation} from "../middlewares/availableResolutionsValidation";
+import {UpdateVideo} from "../models/UpdateVideoModel";
 
 export const videosRoute = Router({})
 

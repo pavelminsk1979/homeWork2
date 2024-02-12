@@ -75,16 +75,16 @@ describe('/blogs',()=>{
 
     })
 
-/*    it('Get blog bu correct id',async ()=>{
+    it('Get blog bu correct id',async ()=>{
         const res =await req
-            .get('/blogs/+idNewBlog')
+            .get('/blogs/'+idNewBlog)
              .expect(200)
 
          expect(res.body.name).toEqual('name')
          expect(res.body.description).toEqual('description')
          expect(res.body.websiteUrl).toEqual('https://www.outue.com/')
 
-    })*/
+    })
 
 
 

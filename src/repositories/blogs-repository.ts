@@ -21,6 +21,7 @@ export const blogsRepository = {
     },
 
     findBlogById(id: string) {
+        debugger
         let blog = blogs.find(e => e.id === id)
         return blog
     },
@@ -29,7 +30,7 @@ export const blogsRepository = {
         const {name, description, websiteUrl} = requestBodyBlog
 
         const newBlog: any = {
-            id: new Date(),
+            id: (new Date()).toISOString(),
             name,
             description,
             websiteUrl

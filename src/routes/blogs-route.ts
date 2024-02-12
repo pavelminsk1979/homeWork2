@@ -5,9 +5,7 @@ import {nameValidationBlogs} from "../middlewares/blogsMiddelwares/nameValidatio
 import {errorValidationBlogs} from "../middlewares/blogsMiddelwares/errorValidationBlogs";
 import {descriptionValidationBlogs} from "../middlewares/blogsMiddelwares/descriptionValidationBlogs";
 import {websiteUrlValidationBlog} from "../middlewares/blogsMiddelwares/websiteUrlValidationBlog";
-import {DeleteVideoById} from "../models/DeleteVideoModel";
-import {videosRepository} from "../repositories/videos-repository";
-import {videosRoute} from "./videos-route";
+
 
 
 
@@ -22,7 +20,7 @@ blogsRoute.get('/', (req: Request, res: Response) => {
 
 
 blogsRoute.get('/:id', (req: Request, res: Response) => {
-
+debugger
     const blog = blogsRepository.findBlogById(req.params.id)
     if (blog) {
         res.status(200).send(blog)
