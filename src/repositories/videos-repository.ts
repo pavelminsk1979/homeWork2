@@ -1,5 +1,5 @@
 import {CreateVideo} from "../models/CreateVideoModel";
-import {UpdateVideo} from "../models/UpdateVideoModel";
+import {UpdateVideoModel} from "../models/UpdateVideoModel";
 
 export enum AvailableResolutions {
     P144 = 'P144',
@@ -80,7 +80,7 @@ export const videosRepository = {
         return newVideo
     },
 
-    updateVideo(id:number,requestBody:UpdateVideo){
+    updateVideo(id:number,requestBody:UpdateVideoModel){
         let {title, author, availableResolutions, minAgeRestriction, canBeDownloaded, publicationDate} = requestBody
 
         let video = videos.find(e => e.id === id)

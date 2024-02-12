@@ -1,8 +1,7 @@
 import { Request, Response} from "express";
 import {Router} from "express";
-import {GetVideoById} from "../models/GetVideoModel";
+import { IdNumberGetAndDeleteModel} from "../models/IdNumberGetAndDeleteModel";
 import {CreateVideo} from "../models/CreateVideoModel";
-import {DeleteVideoById} from "../models/DeleteVideoModel";
 import { videosRepository} from "../repositories/videos-repository";
 import {titleValidation} from "../middlewares/titleValidation";
 import {authorValidation} from "../middlewares/authorValidation";
@@ -11,15 +10,12 @@ import {minAgeRestrictionValidation} from "../middlewares/minAgeRestrictionValid
 import {canBeDownloadedValidation} from "../middlewares/canBeDownloadedValidation";
 import {publicationDateValidation} from "../middlewares/publicationDateValidation";
 import {availableResolutionsValidation} from "../middlewares/availableResolutionsValidation";
-import {UpdateVideo} from "../models/UpdateVideoModel";
+import {RequestWithParams} from "../types/RequestWithParams";
+import {RequestWithBody} from "../types/RequestWithBody";
+
+
 
 export const videosRoute = Router({})
-
-
-type RequestWithParams<P> = Request<P, unknown, unknown, unknown>
-
-
-type RequestWithBody<B> = Request<unknown, unknown, B, unknown>
 
 
 type RequestWithParamsWithBody<P, B> = Request<P, unknown, B, unknown>
@@ -31,7 +27,7 @@ videosRoute.get('/', (req: Request, res: Response) => {
 })
 
 
-videosRoute.get('/:id', (req: RequestWithParams<GetVideoById>, res: Response) => {
+videosRoute.get('/:id', (req: RequestWithParams<IdNumberGetAndDeleteModel>, res: Response) => {
     let video = videosRepository.findVideoById(+req.params.id)
     if (video) {
         res.status(200).send(video)
@@ -48,7 +44,7 @@ videosRoute.post('/', titleValidation, authorValidation, errorValidation,
     })
 
 
-//RequestWithParamsWithBody<GetVideoById, UpdateVideo>
+//RequestWithParamsWithBody<IdNumberGetAndDeleteModel, UpdateVideoModel>
 videosRoute.put('/:id', titleValidation, authorValidation,
     minAgeRestrictionValidation,
     canBeDownloadedValidation,
@@ -64,7 +60,7 @@ videosRoute.put('/:id', titleValidation, authorValidation,
     })
 
 
-videosRoute.delete('/:id', (req: RequestWithParams<DeleteVideoById>, res: Response) => {
+videosRoute.delete('/:id', (req: RequestWithParams<IdNumberGetAndDeleteModel>, res: Response) => {
     let video = videosRepository.deletVideoById(+req.params.id)
     if (video) {
         res.sendStatus(204)

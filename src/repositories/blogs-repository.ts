@@ -1,3 +1,5 @@
+import {CreateAndUpdateBlogModel} from "../models/CreateAndUpdateBlogModel";
+
 export type Blog = {
     id: string,
     name: string,
@@ -26,10 +28,10 @@ export const blogsRepository = {
         return blog
     },
 
-    createBlog(requestBodyBlog: any) {
+    createBlog(requestBodyBlog: CreateAndUpdateBlogModel) {
         const {name, description, websiteUrl} = requestBodyBlog
 
-        const newBlog: any = {
+        const newBlog: Blog = {
             id: (new Date()).toISOString(),
             name,
             description,
@@ -40,7 +42,7 @@ export const blogsRepository = {
         return newBlog
     },
 
-    updateBlog(id: string, requestBodyBlog: any) {
+    updateBlog(id: string, requestBodyBlog: CreateAndUpdateBlogModel) {
         const {name, description, websiteUrl} = requestBodyBlog
         const blog = blogs.find(e => e.id === id)
         if (blog) {

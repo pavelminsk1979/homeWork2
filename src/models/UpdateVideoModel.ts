@@ -1,6 +1,6 @@
 import {AvailableResolutions} from "../repositories/videos-repository";
 
-export  type UpdateVideo = {
+export  type UpdateVideoModel = {
     title: string,
     author: string,
     availableResolutions?: AvailableResolutions[]
