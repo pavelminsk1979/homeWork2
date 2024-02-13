@@ -72,7 +72,7 @@ export const postsRepository = {
         if (indexPost === -1) {
             return false
         } else {
-            blogs.splice(indexPost, 1)
+            posts.splice(indexPost, 1)
             return true
         }
     }

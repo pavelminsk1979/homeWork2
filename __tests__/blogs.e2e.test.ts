@@ -38,7 +38,7 @@ describe('/blogs',()=>{
             ]})
 
 
-        const getRes = await req.get('/videos/')
+        const getRes = await req.get('/blogs/')
         expect(getRes.body).toEqual([])
     })
 
@@ -168,7 +168,7 @@ describe('/blogs',()=>{
     })
 
 
-    it('+ DELETE blog by incorrect ID', async () => {
+    it('+ DELETE blog by correct ID', async () => {
         await req
             .delete('/blogs/'+idNewBlog)
             .set('Authorization', `Basic ${loginPasswordBasic64}`)
