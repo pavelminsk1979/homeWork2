@@ -27,7 +27,6 @@ blogsRoute.get('/', (req: Request, res: Response) => {
 
 
 blogsRoute.get('/:id', (req: RequestWithParams<IdStringGetAndDeleteModel>, res: Response) => {
-debugger
     const blog = blogsRepository.findBlogById(req.params.id)
     if (blog) {
         res.status(STATUS_CODE.CODE_200).send(blog)
