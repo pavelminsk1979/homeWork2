@@ -40,7 +40,7 @@ const newPost = postsRepository.createPost(req.body)
 })
 
 
-//RequestWithParamsWithBody<IdStringGetAndDeleteModel, CreateAndUpdatePostModel>
+
 postsRoute.put('/:id', authMiddleware,
     createAndUpdateValidationPosts(),
     errorValidationBlogs,(req: Request, res: Response) => {
@@ -49,7 +49,7 @@ postsRoute.put('/:id', authMiddleware,
             res.sendStatus(STATUS_CODE.CODE_204)
         }else {res.sendStatus(STATUS_CODE.CODE_404)}
     })
-
+//RequestWithParamsWithBody<IdStringGetAndDeleteModel, CreateAndUpdatePostModel>
 
 postsRoute.delete('/:id',authMiddleware,(req: RequestWithParams<IdStringGetAndDeleteModel>, res: Response) => {
     const isPostDelete = postsRepository.deletePostById(req.params.id)
