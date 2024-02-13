@@ -4,18 +4,19 @@ import {postsRepository} from "../repositories/posts-repository";
 import {RequestWithParams} from "../types/RequestWithParams";
 import {IdStringGetAndDeleteModel} from "../models/IdStringGetAndDeleteModel";
 import {RequestWithBody} from "../types/RequestWithBody";
-import {CreatePostModel} from "../models/CreatePostModel";
+import {CreateAndUpdatePostModel} from "../models/CreateAndUpdatePostModel";
 import {titleValidationPosts} from "../middlewares/postsMiddlewares/titleValidationPosts";
 import {authMiddleware} from "../middlewares/authMiddleware/authMiddleware";
 import {shortDescriptionValidationPosts} from "../middlewares/postsMiddlewares/shortDescriptionValidationPosts";
 import {contentValidationPosts} from "../middlewares/postsMiddlewares/contentValidationPosts";
 import {blogIdValidationPosts} from "../middlewares/postsMiddlewares/blogIdValidationPosts";
 import {errorValidationBlogs} from "../middlewares/blogsMiddelwares/errorValidationBlogs";
+import {blogsRepository} from "../repositories/blogs-repository";
 
 
 export const postsRoute = Router ({})
 
-const createValidationPosts = ()=>[titleValidationPosts,shortDescriptionValidationPosts,contentValidationPosts,blogIdValidationPosts]
+const createAndUpdateValidationPosts = ()=>[titleValidationPosts,shortDescriptionValidationPosts,contentValidationPosts,blogIdValidationPosts]
 
 postsRoute.get('/', (req: Request, res: Response) => {
     const posts = postsRepository.getPosts()
@@ -31,7 +32,38 @@ postsRoute.get('/:id', (req: RequestWithParams<IdStringGetAndDeleteModel>, res: 
 
 })
 
-postsRoute.post('/',authMiddleware,createValidationPosts(),errorValidationBlogs,(req: RequestWithBody<CreatePostModel>, res: Response) => {
+postsRoute.post('/',authMiddleware,
+    createAndUpdateValidationPosts(),
+    errorValidationBlogs,(req: RequestWithBody<CreateAndUpdatePostModel>, res: Response) => {
 const newPost = postsRepository.createPost(req.body)
     res.status(STATUS_CODE.CODE_201).send(newPost)
 })
+
+
+//RequestWithParamsWithBody<IdStringGetAndDeleteModel, CreateAndUpdatePostModel>
+postsRoute.put('/:id', authMiddleware,
+    createAndUpdateValidationPosts(),
+    errorValidationBlogs,(req: Request, res: Response) => {
+    const isUpdatePost = postsRepository.updatePost(req.params.id,req.body)
+        if(isUpdatePost){
+            res.sendStatus(STATUS_CODE.CODE_204)
+        }else {res.sendStatus(STATUS_CODE.CODE_404)}
+    })
+
+
+postsRoute.delete('/:id',authMiddleware,(req: RequestWithParams<IdStringGetAndDeleteModel>, res: Response) => {
+    const isPostDelete = postsRepository.deletePostById(req.params.id)
+    if(isPostDelete){
+        res.sendStatus(STATUS_CODE.CODE_204)
+    }else {
+        res.sendStatus(STATUS_CODE.CODE_404)
+    }
+})
+
+
+
+
+
+
+
+
