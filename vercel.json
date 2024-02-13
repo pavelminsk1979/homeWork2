@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "hw2",
+  "name": "hw02",
   "builds": [
     {
       "src": "src/index.ts",
